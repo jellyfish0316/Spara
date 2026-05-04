@@ -1,0 +1,67 @@
+export const VERDICTS = [
+  // Neutral / observational
+  'A WEDNESDAY', 'A THURSDAY', 'A MONDAY', 'A FRIDAY', 'JUST A DAY',
+  'UNREMARKABLE', 'AVERAGE', 'STANDARD', 'ROUTINE', 'ORDINARY',
+  'A BLUR', 'FUZZY', 'HAZY', 'FOGGY', 'DISTANT',
+  'FINE', 'OKAY', 'ACCEPTABLE', 'PASSABLE', 'TOLERABLE',
+
+  // Positive (without being saccharine)
+  'A GOOD ONE', 'GOOD ENOUGH', 'NOT BAD', 'SOLID', 'DECENT',
+  'WORTH IT', 'EARNED', 'DESERVED', 'WELL SPENT', 'JUSTIFIED',
+  'PRODUCTIVE', 'EFFICIENT', 'FOCUSED', 'SHARP', 'ON IT',
+  'CLEAN', 'STEADY', 'BALANCED', 'GROUNDED', 'PRESENT',
+  'A SOLID B+', 'ABOVE AVERAGE', 'PASSING', 'APPROVED', 'VALID',
+  'LUCKY', 'FORTUNATE', 'GIFTED', 'RICH', 'FULL',
+  'SWEET', 'WARM', 'SOFT', 'GENTLE', 'TENDER',
+  'ALIVE', 'AWAKE', 'HERE', 'INTACT', 'SURVIVING',
+
+  // Negative (wry, not crushing)
+  'BARELY', 'ALMOST', 'CLOSE', 'NEARLY', 'NOT QUITE',
+  'TIRED', 'EXHAUSTED', 'DRAINED', 'SPENT', 'HOLLOW',
+  'SCATTERED', 'DISTRACTED', 'LOST', 'ADRIFT', 'OFF',
+  'MESSY', 'CHAOTIC', 'TURBULENT', 'TANGLED', 'KNOTTED',
+  'HARD', 'ROUGH', 'HEAVY', 'DENSE', 'THICK',
+  'SLOW', 'SLUGGISH', 'DRAGGING', 'BEHIND', 'LATE',
+  'EMPTY', 'HOLLOW', 'FLAT', 'DRY', 'BARE',
+  'OVERCROWDED', 'TOO MUCH', 'A BIT MUCH', 'MAXED OUT', 'OVERLOADED',
+
+  // Poetic / unexpected
+  'CRYPTIC', 'STRANGE', 'WEIRD', 'ODD', 'UNUSUAL',
+  'NOTABLE', 'MARKED', 'SIGNIFICANT', 'MEMORABLE', 'STAMPED',
+  'QUIET', 'QUIET ONE', 'SILENT', 'STILL', 'HUSHED',
+  'LOUD', 'BRIGHT', 'SHARP', 'VIVID', 'ELECTRIC',
+  'LONG', 'SHORT', 'BRIEF', 'STRETCHED', 'EXTENDED',
+  'FAST', 'RUSHED', 'URGENT', 'PRESSURED', 'RACING',
+  'HONEST', 'TRUE', 'REAL', 'RAW', 'UNFILTERED',
+  'GENTLE', 'CAREFUL', 'MEASURED', 'DELIBERATE', 'CONSIDERED',
+
+  // Specific / situational
+  'OVERTIME', 'DOUBLE SHIFT', 'UNPAID', 'CLOCKED IN', 'CLOCKED OUT',
+  'SHE WON', 'HE WON', 'THEY WON', 'I WON', 'WE TRIED',
+  'SURVIVED', 'ENDURED', 'PERSISTED', 'CONTINUED', 'SHOWED UP',
+  'RAIN CHECK', 'POSTPONED', 'RESCHEDULED', 'PENDING', 'DEFERRED',
+  'COMPLICATED', 'NUANCED', 'LAYERED', 'COMPLEX', 'MULTIFACETED',
+  'SEASONAL', 'SITUATIONAL', 'CONTEXTUAL', 'CONDITIONAL', 'RELATIVE',
+
+  // Short punchy ones
+  'YES', 'NO', 'MAYBE', 'SURE', 'WHATEVER',
+  'DONE', 'FINISHED', 'OVER', 'COMPLETE', 'CLOSED',
+  'OPEN', 'PENDING', 'ONGOING', 'ACTIVE', 'LIVE',
+  'FULL', 'HALF', 'QUARTER', 'PARTIAL', 'WHOLE',
+  'UP', 'DOWN', 'SIDEWAYS', 'FORWARD', 'BACKWARD',
+
+  // Food / hunger metaphors (fits the receipt theme)
+  'WELL FED', 'HUNGRY', 'SATIATED', 'STUFFED', 'STARVING',
+  'OVER TIPPED', 'UNDERTIPPED', 'COMPED', 'ON THE HOUSE', 'PAID IN FULL',
+  'GOOD VALUE', 'OVERPRICED', 'FAIR', 'DISCOUNTED', 'FULL PRICE',
+
+  // Time of day vibes
+  'MIDNIGHT', 'GOLDEN HOUR', 'BLUE HOUR', 'PEAK HOURS', 'OFF-PEAK',
+  'EARLY', 'LATE', 'ON TIME', 'AHEAD', 'BEHIND SCHEDULE',
+] as const;
+
+export function pickVerdict(exclude: string[] = []): string {
+  const pool = VERDICTS.filter(v => !exclude.includes(v));
+  const candidates = pool.length > 0 ? pool : [...VERDICTS];
+  return candidates[Math.floor(Math.random() * candidates.length)];
+}
