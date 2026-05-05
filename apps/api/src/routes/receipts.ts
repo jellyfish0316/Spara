@@ -1,6 +1,7 @@
 import { Hono } from 'hono';
 import { db } from '../db';
 import { receipts, lineItems } from '@spara/db';
+import { eq } from 'drizzle-orm';
 
 const app = new Hono();
 
@@ -68,6 +69,36 @@ app.get('/:id', async (c) => {
   if (!receipt) return c.json({ error: 'Receipt not found' }, 404);
 
   return c.json(receipt);
+});
+
+app.post('/:id/finalize', async (c) => {
+    const id = c.req.param('id');
+    const body = await c.req.json();
+    const { verdictText } = body;
+
+    const receipt = await db.query.receipts.findFirst({
+        where: (r, ops) => ops.and(ops.eq(r.id, id), ops.eq(r.userId, DEV_USER_ID)),
+        with: { lineItems: true },
+    });
+
+    if (!receipt) return c.json({ error: 'Receipt not found' }, 404);
+    if (receipt.state !== 'open') return c.json({ error: 'Receipt already finalized' }, 403);
+    if (!verdictText) return c.json({ error: 'verdictText is required' }, 400);
+
+    const updated = await db.update(receipts)
+    .set({
+        state: 'finalized',
+        verdictText: verdictText.toUpperCase().slice(0, 40),
+        verdictMethod: 'llm',
+        finalizeMode: 'manual',
+        finalizedAt: new Date(),
+    })
+    .where(eq(receipts.id, id))
+    .returning();
+
+  return c.json(updated[0]);
+
+
 });
 
 
