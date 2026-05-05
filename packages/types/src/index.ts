@@ -1,4 +1,4 @@
-export type PriceType = 'dollars' | 'priceless' | 'free' | 'zero' | 'dash' | 'stars';
+eFxport type PriceType = 'dollars' | 'priceless' | 'free' | 'zero' | 'dash' | 'stars';
 
 export type LineItemSourceType =
   | 'voice_note'
@@ -29,7 +29,7 @@ export interface WeatherSnapshot {
 }
 
 export interface LocationSnapshot {
-  city: string;
+  area: string;
   country: string;
 }
 
