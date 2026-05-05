@@ -1,4 +1,4 @@
-eFxport type PriceType = 'dollars' | 'priceless' | 'free' | 'zero' | 'dash' | 'stars';
+export type PriceType = 'dollars' | 'priceless' | 'free' | 'zero' | 'dash' | 'stars';
 
 export type LineItemSourceType =
   | 'voice_note'

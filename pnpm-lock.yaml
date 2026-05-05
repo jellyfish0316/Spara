@@ -57,6 +57,9 @@ importers:
 
   apps/mobile:
     dependencies:
+      '@spara/types':
+        specifier: workspace:*
+        version: link:../../packages/types
       expo:
         specifier: ~55.0.20
         version: 55.0.20(@babel/core@7.29.0)(@expo/dom-webview@55.0.5)(@expo/metro-runtime@55.0.10)(expo-router@55.0.13)(react-dom@19.2.5(react@19.2.0))(react-native@0.83.6(@babel/core@7.29.0)(@types/react@19.2.14)(react@19.2.0))(react@19.2.0)(typescript@5.9.3)

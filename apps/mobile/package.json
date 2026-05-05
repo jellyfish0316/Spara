@@ -9,6 +9,7 @@
     "web": "expo start --web"
   },
   "dependencies": {
+    "@spara/types": "workspace:*",
     "expo": "~55.0.20",
     "expo-router": "^55.0.13",
     "expo-status-bar": "~55.0.5",
