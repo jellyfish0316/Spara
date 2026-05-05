@@ -4,6 +4,7 @@ import { cors } from 'hono/cors';
 import { logger } from 'hono/logger';
 
 import receipts from './routes/receipts';
+import lineItems from './routes/lineItems';
 
 const app = new Hono();
 
@@ -11,6 +12,7 @@ app.use('*', logger());
 app.use('*', cors());
 
 app.route('/receipts', receipts);
+app.route('/line-items', lineItems);
 
 app.get('/', (c) => c.json({ status: 'ok', service: 'spara-api' }));
 

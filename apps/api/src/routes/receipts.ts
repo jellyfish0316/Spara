@@ -53,5 +53,23 @@ app.get('/today', async (c) => {
     return c.json(receipt);
 });
 
+app.get('/:id', async (c) => {
+  const id = c.req.param('id');
+
+  const receipt = await db.query.receipts.findFirst({
+    where: (r, ops) => ops.and(ops.eq(r.id, id), ops.eq(r.userId, DEV_USER_ID)),
+    with: {
+      lineItems: {
+        orderBy: (li, ops) => ops.asc(li.position),
+      },
+    },
+  });
+
+  if (!receipt) return c.json({ error: 'Receipt not found' }, 404);
+
+  return c.json(receipt);
+});
+
+
 export default app;
 
