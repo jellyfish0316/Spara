@@ -42,11 +42,11 @@ app.post('/', async(c) => {
 
 });
 
-app.delete('/', async(c) => {
+app.delete('/:id', async(c) => {
     const id = c.req.param('id');
 
     const item = await db.query.lineItems.findFirst({
-        where: (li, ops) => ops.eq(li.id, li),
+        where: (li, ops) => ops.eq(li.id, id),
         with: { receipt: true},
     });
 

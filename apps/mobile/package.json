@@ -9,8 +9,10 @@
     "web": "expo start --web"
   },
   "dependencies": {
+    "@expo-google-fonts/ibm-plex-mono": "^0.4.1",
     "@spara/types": "workspace:*",
     "expo": "~55.0.20",
+    "expo-font": "^55.0.7",
     "expo-router": "^55.0.13",
     "expo-status-bar": "~55.0.5",
     "react": "19.2.0",
