@@ -85,7 +85,7 @@ app.post('/:id/finalize', async (c) => {
     if (receipt.state !== 'open') return c.json({ error: 'Receipt already finalized' }, 403);
     if (!verdictText) return c.json({ error: 'verdictText is required' }, 400);
 
-    const updated = await db.update(receipts)
+    await db.update(receipts)
     .set({
         state: 'finalized',
         verdictText: verdictText.toUpperCase().slice(0, 40),
@@ -93,12 +93,45 @@ app.post('/:id/finalize', async (c) => {
         finalizeMode: 'manual',
         finalizedAt: new Date(),
     })
-    .where(eq(receipts.id, id))
-    .returning();
+    .where(eq(receipts.id, id));
 
-  return c.json(updated[0]);
+    const updated = await db.query.receipts.findFirst({
+        where: (r, ops) => ops.eq(r.id, id),
+        with: {
+            lineItems: {
+                orderBy: (li, ops) => ops.asc(li.position),
+            },
+        },
+    });
+
+  return c.json(updated);
 
 
+});
+
+// Dev-only: reset a finalized receipt back to open
+app.post('/:id/reopen', async (c) => {
+    const id = c.req.param('id');
+    await db.update(receipts)
+    .set({
+        state: 'open',
+        verdictText: null,
+        verdictMethod: null,
+        finalizeMode: null,
+        finalizedAt: null,
+        rerollUsed: false,
+    })
+    .where(eq(receipts.id, id));
+
+    const updated = await db.query.receipts.findFirst({
+        where: (r, ops) => ops.eq(r.id, id),
+        with: {
+            lineItems: {
+                orderBy: (li, ops) => ops.asc(li.position),
+            },
+        },
+    });
+    return c.json(updated);
 });
 
 

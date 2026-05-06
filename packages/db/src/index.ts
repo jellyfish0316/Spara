@@ -4,7 +4,8 @@ import * as schema from './schema';
 
 export * from './schema';
 
-let _db: ReturnType<typeof drizzle> | null = null;
+type Schema = typeof schema;
+let _db: ReturnType<typeof drizzle<Schema>> | null = null;
 
 export function getDb(connectionString: string) {
   if (!_db) {

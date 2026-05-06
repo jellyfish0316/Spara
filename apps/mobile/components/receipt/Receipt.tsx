@@ -9,25 +9,27 @@ interface Props {
 
 export function Receipt({ receipt, onDeleteItem }: Props) {
   return (
-    <View style={{ backgroundColor: colors.cream }}>
-      <Perforation />
-      <View style={{ paddingHorizontal: 20, paddingTop: 18 }}>
-        <Header receipt={receipt} />
-        <DashedLine />
-        <ColumnHeaders />
-        <DashedLine />
-        <View style={{ paddingTop: 4 }}>
-          {receipt.lineItems.map((item) => (
-            <LineItemRow key={item.id} item={item} onDelete={onDeleteItem} />
-          ))}
-        </View>
-        <View style={{ paddingVertical: 6 }}>
+    <View>
+      <View style={{ backgroundColor: colors.cream }}>
+        <Perforation />
+        <View style={{ paddingHorizontal: 20, paddingTop: 18 }}>
+          <Header receipt={receipt} />
+          <SolidLine />
+          <ColumnHeaders />
           <DashedLine />
+          <View style={{ paddingTop: 4 }}>
+            {receipt.lineItems.map((item) => (
+              <LineItemRow key={item.id} item={item} onDelete={onDeleteItem} />
+            ))}
+          </View>
+          <View style={{ paddingVertical: 6 }}>
+            <DashedLine />
+          </View>
+          <SummaryRows verdictText={receipt.verdictText} />
+          <ThankYou />
+          <Barcode />
+          <ReceiptCode localDate={receipt.localDate} />
         </View>
-        <Subtotal count={receipt.lineItems.length} />
-        <Total />
-        <Barcode />
-        <Footer />
       </View>
       <Perforation />
     </View>
@@ -63,6 +65,10 @@ function DashedLine() {
       ))}
     </View>
   );
+}
+
+function SolidLine() {
+  return <View style={{ height: 1, backgroundColor: colors.inkFaint }} />;
 }
 
 function Header({ receipt }: { receipt: ReceiptType }) {
@@ -123,61 +129,90 @@ function LineItemRow({ item, onDelete }: { item: LineItem; onDelete?: (id: strin
   );
 }
 
-function Subtotal({ count }: { count: number }) {
-  const style = { fontFamily: fonts.regular, fontSize: 9, letterSpacing: 0.9, color: colors.inkLight };
+function SummaryRows({ verdictText }: { verdictText: string | null }) {
   return (
-    <View style={{ flexDirection: 'row', justifyContent: 'space-between', paddingBottom: 5 }}>
-      <Text style={style}>{count} ITEM{count !== 1 ? 'S' : ''}</Text>
-      <Text style={style}>VERDICT PENDING</Text>
+    <View style={{ marginBottom: 14 }}>
+      <SummaryRow label="SUBTOTAL" value="14h awake" />
+      <SummaryRow label="TIPS" value="7h on screens" />
+      <SummaryRow label="TAX" value="3h sleep debt" />
+      <View style={{ marginTop: 6 }}>
+        <DashedLine />
+      </View>
+      <View style={{
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        paddingVertical: 8,
+        borderBottomWidth: 1,
+        borderColor: colors.inkFaint,
+      }}>
+        <Text style={{ fontFamily: fonts.semibold, fontSize: 11, letterSpacing: 1.65, color: colors.ink }}>TOTAL</Text>
+        {verdictText ? (
+          <Text style={{ fontFamily: fonts.semibold, fontSize: 11, letterSpacing: 1.65, color: colors.ink }} numberOfLines={1}>
+            {verdictText}
+          </Text>
+        ) : (
+          <Text style={{ fontFamily: fonts.regular, fontSize: 11, letterSpacing: 3.3, color: colors.inkFaint }}>· · · · · · ·</Text>
+        )}
+      </View>
     </View>
   );
 }
 
-function Total() {
+function SummaryRow({ label, value }: { label: string; value: string }) {
   return (
-    <View style={{
-      flexDirection: 'row',
-      justifyContent: 'space-between',
-      alignItems: 'center',
-      paddingVertical: 8,
-      borderTopWidth: 1,
-      borderBottomWidth: 1,
-      borderColor: colors.inkFaint,
-      marginBottom: 14,
-    }}>
-      <Text style={{ fontFamily: fonts.semibold, fontSize: 11, letterSpacing: 1.65, color: colors.ink }}>TOTAL</Text>
-      <Text style={{ fontFamily: fonts.regular, fontSize: 11, letterSpacing: 3.3, color: colors.inkFaint }}>· · · · · · ·</Text>
+    <View style={{ flexDirection: 'row', justifyContent: 'space-between', paddingVertical: 3 }}>
+      <Text style={{ fontFamily: fonts.regular, fontSize: 9, letterSpacing: 0.9, color: colors.inkLight }}>{label}</Text>
+      <Text style={{ fontFamily: fonts.regular, fontSize: 10, color: colors.ink }}>{value}</Text>
+    </View>
+  );
+}
+
+function ThankYou() {
+  const style = { fontFamily: fonts.regular, fontSize: 11, color: colors.inkLight, textAlign: 'center' as const, lineHeight: 16 };
+  return (
+    <View style={{ alignItems: 'center', paddingVertical: 8 }}>
+      <Text style={style}>thank you for living</Text>
+      <Text style={style}>come again tomorrow</Text>
     </View>
   );
 }
 
 function Barcode() {
-  const seq = [2,1,3,1,2,1,1,3,2,1,2,2,1,3,1,2,1,2,3,1,2,1,1,2,3,1,2,1,3,2,1,1,2,1,3,2,1];
+  const seq = [2,2,3,2,5,2,2,3,2,3,5,2,2,3,2,5,3,2,2,3,3,2,2,5,2,3,2,2,3,5,2,2,3,2,5,2,2,3,2,3,5,2,2,3,2,5,3,2,2,3,2,2,5,2,3,2,2,3,5,2,3,2,2,5,2,3,2,2,3,5,2,2,3,2,5,2,2,3,2,3];
   return (
-    <View style={{ alignItems: 'center', paddingBottom: 8 }}>
-      <View style={{ flexDirection: 'row', height: 24 }}>
+    <View style={{ alignItems: 'center', paddingTop: 10, paddingBottom: 6 }}>
+      <View style={{ flexDirection: 'row', height: 40 }}>
         {seq.map((w, i) => (
-          <View key={i} style={{ width: w, height: 24, backgroundColor: i % 2 === 0 ? colors.ink : 'transparent' }} />
+          <View key={i} style={{ width: w, height: 40, backgroundColor: i % 2 === 0 ? colors.ink : 'transparent' }} />
         ))}
       </View>
     </View>
   );
 }
 
-function Footer() {
+function ReceiptCode({ localDate }: { localDate: string }) {
+  const code = formatReceiptCode(localDate);
   return (
     <Text style={{
       textAlign: 'center',
       fontFamily: fonts.regular,
-      fontSize: 8,
-      letterSpacing: 0.8,
-      color: colors.inkFaint,
-      marginTop: 6,
-      paddingBottom: 16,
+      fontSize: 10,
+      letterSpacing: 2,
+      color: colors.inkLight,
+      paddingBottom: 18,
     }}>
-      KEEP FOR YOUR RECORDS
+      RCPT  ·  {code}  ·  TND
     </Text>
   );
+}
+
+function formatReceiptCode(localDate: string): string {
+  const d = new Date(localDate + 'T00:00:00');
+  const mm = String(d.getMonth() + 1).padStart(2, '0');
+  const dd = String(d.getDate()).padStart(2, '0');
+  const yy = String(d.getFullYear()).slice(2);
+  return `${mm}${dd}${yy}`;
 }
 
 function formatDate(localDate: string): string {

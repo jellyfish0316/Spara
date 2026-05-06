@@ -25,7 +25,7 @@ app.post('/', async(c) => {
 
     const position = (lastItem?.position ?? -1) + 1;
 
-    const inserted = await db.insert(lineItems).values({
+    await db.insert(lineItems).values({
         receiptId,
         sourceType,
         itemText,
@@ -36,9 +36,18 @@ app.post('/', async(c) => {
         rawInput,
         sourceReference,
         position,
-    }).returning();
+    });
 
-    return c.json(inserted[0], 201);
+    const updated = await db.query.receipts.findFirst({
+        where: (r, ops) => ops.eq(r.id, receiptId),
+        with: {
+            lineItems: {
+                orderBy: (li, ops) => ops.asc(li.position),
+            },
+        },
+    });
+
+    return c.json(updated, 201);
 
 });
 
@@ -54,8 +63,17 @@ app.delete('/:id', async(c) => {
     if (item.receipt.state !== 'open') return c.json({ error: 'Receipt is finalized' }, 403);
 
     await db.delete(lineItems).where(eq(lineItems.id, id));
-    
-    return c.json({ success: true });
+
+    const updated = await db.query.receipts.findFirst({
+        where: (r, ops) => ops.eq(r.id, item.receiptId),
+        with: {
+            lineItems: {
+                orderBy: (li, ops) => ops.asc(li.position),
+            },
+        },
+    });
+
+    return c.json(updated);
 });
 
 export default app;

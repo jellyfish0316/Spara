@@ -60,6 +60,9 @@ importers:
       '@expo-google-fonts/ibm-plex-mono':
         specifier: ^0.4.1
         version: 0.4.1
+      '@kingstinct/react-native-healthkit':
+        specifier: ^14.0.0
+        version: 14.0.0(react-native-nitro-modules@0.35.6(react-native@0.83.6(@babel/core@7.29.0)(@types/react@19.2.14)(react@19.2.0))(react@19.2.0))(react-native@0.83.6(@babel/core@7.29.0)(@types/react@19.2.14)(react@19.2.0))(react@19.2.0)
       '@spara/types':
         specifier: workspace:*
         version: link:../../packages/types
@@ -81,6 +84,9 @@ importers:
       react-native:
         specifier: 0.83.6
         version: 0.83.6(@babel/core@7.29.0)(@types/react@19.2.14)(react@19.2.0)
+      react-native-nitro-modules:
+        specifier: ^0.35.6
+        version: 0.35.6(react-native@0.83.6(@babel/core@7.29.0)(@types/react@19.2.14)(react@19.2.0))(react@19.2.0)
       zustand:
         specifier: ^5.0.0
         version: 5.0.13(@types/react@19.2.14)(react@19.2.0)(use-sync-external-store@1.6.0(react@19.2.0))
@@ -1293,6 +1299,13 @@ packages:
 
   '@jridgewell/trace-mapping@0.3.31':
     resolution: {integrity: sha512-zzNR+SdQSDJzc8joaeP8QQoCQr8NuYx2dIIytl1QeBEZHJ9uW6hebsrYgbz8hJwUQao3TWCMtmfV8Nu1twOLAw==}
+
+  '@kingstinct/react-native-healthkit@14.0.0':
+    resolution: {integrity: sha512-VJQb1+NUQIQJQbX3lqORVU6SJsCG0D0WQc2BgKSOcjfj8SvEKyuexgS/8JWnUeijDtkMtMhO3HzmkGfKD8XPNw==}
+    peerDependencies:
+      react: '>=19'
+      react-native: '>=0.79'
+      react-native-nitro-modules: '>=0.35'
 
   '@radix-ui/primitive@1.1.3':
     resolution: {integrity: sha512-JTF99U/6XIjCBo0wqkU5sK10glYe27MRRsfwoiq5zzOEZLHU3A3KCMa5X/azekYRCJ0HlwI0crAXS/5dEHTzDg==}
@@ -3286,6 +3299,12 @@ packages:
       react: '*'
       react-native: '*'
 
+  react-native-nitro-modules@0.35.6:
+    resolution: {integrity: sha512-3Cb7s+O5tpZ6RdIiPOB/wi3IMfBxD6tl6VDF8gJ5zvM/BEGTWxwMMLjzmWmsYPKekdbYBznF6qp2d2SxixPy8g==}
+    peerDependencies:
+      react: '*'
+      react-native: '*'
+
   react-native-safe-area-context@5.7.0:
     resolution: {integrity: sha512-/9/MtQz8ODphjsLdZ+GZAIcC/RtoqW9EeShf7Uvnfgm/pzYrJ75y3PV/J1wuAV1T5Dye5ygq4EAW20RoBq0ABQ==}
     peerDependencies:
@@ -5117,6 +5136,12 @@ snapshots:
     dependencies:
       '@jridgewell/resolve-uri': 3.1.2
       '@jridgewell/sourcemap-codec': 1.5.5
+
+  '@kingstinct/react-native-healthkit@14.0.0(react-native-nitro-modules@0.35.6(react-native@0.83.6(@babel/core@7.29.0)(@types/react@19.2.14)(react@19.2.0))(react@19.2.0))(react-native@0.83.6(@babel/core@7.29.0)(@types/react@19.2.14)(react@19.2.0))(react@19.2.0)':
+    dependencies:
+      react: 19.2.0
+      react-native: 0.83.6(@babel/core@7.29.0)(@types/react@19.2.14)(react@19.2.0)
+      react-native-nitro-modules: 0.35.6(react-native@0.83.6(@babel/core@7.29.0)(@types/react@19.2.14)(react@19.2.0))(react@19.2.0)
 
   '@radix-ui/primitive@1.1.3': {}
 
@@ -7296,6 +7321,11 @@ snapshots:
   react-is@19.2.5: {}
 
   react-native-is-edge-to-edge@1.3.1(react-native@0.83.6(@babel/core@7.29.0)(@types/react@19.2.14)(react@19.2.0))(react@19.2.0):
+    dependencies:
+      react: 19.2.0
+      react-native: 0.83.6(@babel/core@7.29.0)(@types/react@19.2.14)(react@19.2.0)
+
+  react-native-nitro-modules@0.35.6(react-native@0.83.6(@babel/core@7.29.0)(@types/react@19.2.14)(react@19.2.0))(react@19.2.0):
     dependencies:
       react: 19.2.0
       react-native: 0.83.6(@babel/core@7.29.0)(@types/react@19.2.14)(react@19.2.0)

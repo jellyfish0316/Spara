@@ -13,21 +13,21 @@ async function request<T>(path: string, options?: RequestInit): Promise<T> {
 }
 
 export function getToday(): Promise<Receipt> {
-    return request(`/receipts/today?userId=${USER_ID}}`);
+    return request(`/receipts/today?userId=${USER_ID}`);
 }
 
 export function getReceipt(id: string): Promise<Receipt> {
     return request(`/receipts/${id}`);
 }
 
-export function addLineItem(receiptId: string, data: NewLineItemInput): Promise<void> {
+export function addLineItem(receiptId: string, data: NewLineItemInput): Promise<Receipt> {
     return request('/line-items', {
         method: 'POST',
         body: JSON.stringify({ ...data, receiptId, userId: USER_ID }),
     });
 }
 
-export function deleteLineItem(id: string): Promise<void> {
+export function deleteLineItem(id: string): Promise<Receipt> {
     return request(`/line-items/${id}`, { method: 'DELETE' });
 }
 

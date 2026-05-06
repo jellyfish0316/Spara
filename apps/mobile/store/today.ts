@@ -20,10 +20,10 @@ export const useTodayStore = create<TodayState>((set, get) => ({
     loadToday: async () => {
         set({ loading: true, error: null });
         try {
-        const receipt = await api.getToday();
-        set({ receipt, loading: false });
+            const receipt = await api.getToday();
+            set({ receipt, loading: false });
         } catch (err) {
-        set({ error: (err as Error).message, loading: false });
+            set({ error: (err as Error).message, loading: false });
         }
     },
 
@@ -31,20 +31,22 @@ export const useTodayStore = create<TodayState>((set, get) => ({
         const receipt = get().receipt;
         if (!receipt) return;
         try {
-            await api.addLineItem(receipt.id, input);
+            const updated = await api.addLineItem(receipt.id, input);
+            set({ receipt: updated });
         } catch (err) {
             console.warn('Add failed:', err);
+            await get().loadToday();
         }
-        await get().loadToday();
     },
 
     removeItem: async (id) => {
         try {
-            await api.deleteLineItem(id);
+            const updated = await api.deleteLineItem(id);
+            set({ receipt: updated });
         } catch (err) {
             console.warn('Delete failed, refetching:', err);
+            await get().loadToday();
         }
-        await get().loadToday();
     },
 
     finalize: async (verdictText) => {

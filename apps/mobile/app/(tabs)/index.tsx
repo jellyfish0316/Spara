@@ -97,7 +97,7 @@ export default function TodayScreen() {
 
         {showFinalize && (
           <Pressable
-            onPress={() => {/* finalize TODO */}}
+            onPress={() => router.push('/finalize')}
             style={({ pressed }) => ({
               flex: 1,
               height: 38,
