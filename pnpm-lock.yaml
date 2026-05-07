@@ -32,6 +32,9 @@ importers:
       '@spara/verdicts':
         specifier: workspace:*
         version: link:../../packages/verdicts
+      croner:
+        specifier: ^10.0.1
+        version: 10.0.1
       drizzle-orm:
         specifier: ^0.30.10
         version: 0.30.10(@types/react@19.2.14)(postgres@3.4.9)(react@19.2.5)
@@ -2079,6 +2082,10 @@ packages:
 
   core-js-compat@3.49.0:
     resolution: {integrity: sha512-VQXt1jr9cBz03b331DFDCCP90b3fanciLkgiOoy8SBHy06gNf+vQ1A3WFLqG7I8TipYIKeYK9wxd0tUrvHcOZA==}
+
+  croner@10.0.1:
+    resolution: {integrity: sha512-ixNtAJndqh173VQ4KodSdJEI6nuioBWI0V1ITNKhZZsO0pEMoDxz539T4FTTbSZ/xIOSuDnzxLVRqBVSvPNE2g==}
+    engines: {node: '>=18.0'}
 
   cross-spawn@7.0.6:
     resolution: {integrity: sha512-uV2QOWP2nWzsy2aMp8aRibhi9dlzF5Hgh5SHaB9OiTGEyDTiJJyx0uy51QXdyWbtAHNua4XJzUKca3OzKUd3vA==}
@@ -6051,6 +6058,8 @@ snapshots:
   core-js-compat@3.49.0:
     dependencies:
       browserslist: 4.28.2
+
+  croner@10.0.1: {}
 
   cross-spawn@7.0.6:
     dependencies:

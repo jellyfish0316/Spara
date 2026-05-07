@@ -2,6 +2,7 @@ import { Hono } from 'hono';
 import { db } from '../db';
 import { receipts, lineItems } from '@spara/db';
 import { eq } from 'drizzle-orm';
+import { runAutoFinalize } from '../jobs/auto-finalize'; // Dev-only
 
 const app = new Hono();
 
@@ -69,6 +70,30 @@ app.get('/today', async (c) => {
 
     return c.json(receipt);
 });
+
+// Dev-only: trigger the auto-finalize scan immediately
+app.post('/jobs/auto-finalize', async (c) => {
+    const result = await runAutoFinalize();
+    return c.json(result);
+});
+
+// Dev-only: backdate a receipt to test auto-finalize
+app.post('/:id/backdate', async (c) => {
+    const id = c.req.param('id');
+    const { localDate } = await c.req.json();
+    await db.update(receipts)
+        .set({
+            state: 'open',
+            localDate,
+            verdictText: null,
+            verdictMethod: null,
+            finalizeMode: null,
+            finalizedAt: null,
+        })
+        .where(eq(receipts.id, id));
+    return c.json({ ok: true });
+});
+// Dev-only: end
 
 app.get('/:id', async (c) => {
   const id = c.req.param('id');
