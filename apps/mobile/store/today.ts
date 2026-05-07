@@ -1,7 +1,9 @@
 import { create } from 'zustand';
-import type { Receipt, NewLineItemInput, HealthSnapshot } from '@spara/types';
+import type { Receipt, NewLineItemInput, HealthSnapshot, WeatherSnapshot } from '@spara/types';
 import * as api from '../lib/api';
+import { getCoords } from '../lib/location';
 import { useLibraryStore } from './library';
+
 
 interface TodayState {
     receipt: Receipt | null;
@@ -23,6 +25,9 @@ export const useTodayStore = create<TodayState>((set, get) => ({
         try {
             const receipt = await api.getToday();
             set({ receipt, loading: false });
+            if (!receipt.weatherSnapshot) {
+                void hydrateWeather(receipt.id, set, get);
+            }
         } catch (err) {
             set({ error: (err as Error).message, loading: false });
         }
@@ -58,3 +63,23 @@ export const useTodayStore = create<TodayState>((set, get) => ({
         useLibraryStore.getState().addReceipt(updated);
     },
 }));
+
+async function hydrateWeather(
+    receiptId: string,
+    set: (partial: Partial<TodayState>) => void,
+    get: () => TodayState,
+) {
+    try {
+        const coords = await getCoords();
+        if (!coords) return;
+        const w = await api.getWeather(coords.lat, coords.lng);
+        const updated = await api.setReceiptSnapshot(receiptId, {
+            weatherSnapshot: { temp: w.temp, condition: w.condition as WeatherSnapshot['condition'], unit: w.unit as 'C' | 'F' },
+            locationSnapshot: { area: w.area, country: w.country },
+        });
+        // Only apply if we're still looking at the same receipt
+        if (get().receipt?.id === updated.id) set({ receipt: updated });
+    } catch (err) {
+        console.warn('Weather hydration failed:', err);
+    }
+}

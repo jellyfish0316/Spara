@@ -76,21 +76,39 @@ function SolidLine() {
 }
 
 function Header({ receipt }: { receipt: ReceiptType }) {
-  const status = receipt.state === 'open' ? '—— IN PROGRESS ——' : '—— FINALIZED ——';
-  return (
-    <View style={{ alignItems: 'center', marginBottom: 14 }}>
-      <Text style={{ fontFamily: fonts.regular, fontSize: 11, letterSpacing: 1.1, color: colors.inkLight, marginBottom: 2 }}>
-        {formatDate(receipt.localDate)}
-      </Text>
-      <Text style={{ fontFamily: fonts.semibold, fontSize: 17, letterSpacing: 2, color: colors.ink, marginBottom: 4 }}>
-        DAILY RECEIPT
-      </Text>
-      <Text style={{ fontFamily: fonts.regular, fontSize: 9, letterSpacing: 0.72, color: colors.inkLight }}>
-        {status}
-      </Text>
-    </View>
-  );
+    const status = receipt.state === 'open' ? '—— IN PROGRESS ——' : '—— FINALIZED ——';
+    const w = receipt.weatherSnapshot;
+    const loc = receipt.locationSnapshot;
+    const subtitle = w && loc
+        ? `${w.condition.toUpperCase()}  ·  ${w.temp}°${w.unit}  ·  ${loc.area.toUpperCase()}, ${loc.country}`
+        : null;
+
+    return (
+        <View style={{ alignItems: 'center', marginBottom: 14 }}>
+            <Text style={{ fontFamily: fonts.regular, fontSize: 11, letterSpacing: 1.1, color: colors.inkLight, marginBottom: 2 }}>
+                {formatDate(receipt.localDate)}
+            </Text>
+            <Text style={{ fontFamily: fonts.semibold, fontSize: 17, letterSpacing: 2, color: colors.ink, marginBottom: 4 }}>
+                DAILY RECEIPT
+            </Text>
+            <Text style={{ fontFamily: fonts.regular, fontSize: 9, letterSpacing: 0.72, color: colors.inkLight }}>
+                {status}
+            </Text>
+            {subtitle && (
+                <Text style={{
+                    fontFamily: fonts.regular,
+                    fontSize: 8,
+                    letterSpacing: 0.8,
+                    color: colors.inkFaint,
+                    marginTop: 4,
+                }}>
+                    {subtitle}
+                </Text>
+            )}
+        </View>
+    );
 }
+
 
 function ColumnHeaders() {
   const labelStyle = { fontFamily: fonts.regular, fontSize: 9, letterSpacing: 1.08, color: colors.inkLight };

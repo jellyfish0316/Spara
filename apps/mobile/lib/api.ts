@@ -1,4 +1,4 @@
-import type { Receipt, NewLineItemInput, HealthEvent, HealthSnapshot } from '@spara/types';
+import type { Receipt, NewLineItemInput, HealthEvent, HealthSnapshot, WeatherSnapshot, LocationSnapshot } from '@spara/types';
 
 const BASE_URL = process.env.EXPO_PUBLIC_API_URL!;
 const USER_ID = process.env.EXPO_PUBLIC_DEV_USER_ID!;
@@ -66,3 +66,12 @@ export function getWeather(lat: number, lng: number): Promise<{
     return request(`/weather?lat=${lat}&lng=${lng}`);
 }
 
+export function setReceiptSnapshot(
+    id: string,
+    snapshot: { weatherSnapshot?: WeatherSnapshot | null; locationSnapshot?: LocationSnapshot | null },
+): Promise<Receipt> {
+    return request(`/receipts/${id}/snapshot`, {
+        method: 'POST',
+        body: JSON.stringify(snapshot),
+    });
+}
