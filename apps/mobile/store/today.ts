@@ -1,6 +1,7 @@
 import { create } from 'zustand';
 import type { Receipt, NewLineItemInput, HealthSnapshot } from '@spara/types';
 import * as api from '../lib/api';
+import { useLibraryStore } from './library';
 
 interface TodayState {
     receipt: Receipt | null;
@@ -54,5 +55,6 @@ export const useTodayStore = create<TodayState>((set, get) => ({
         if (!receipt) return;
         const updated = await api.finalizeReceipt(receipt.id, verdictText, healthSnapshot);
         set({ receipt: updated });
+        useLibraryStore.getState().addReceipt(updated);
     },
 }));

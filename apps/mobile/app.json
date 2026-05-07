@@ -15,7 +15,10 @@
     },
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.spara.app"
+      "bundleIdentifier": "com.spara.app",
+      "infoPlist": {
+        "NSLocationWhenInUseUsageDescription": "Spara captures your morning weather and city to add to your daily receipt."
+      }
     },
     "android": {
       "adaptiveIcon": {
@@ -35,6 +38,12 @@
         {
           "NSHealthShareUsageDescription": "Spara reads your sleep, steps, and workouts to fill in your daily receipt.",
           "NSHealthUpdateUsageDescription": "Spara does not write data to Health."
+        }
+      ],
+      [
+        "expo-location",
+        {
+          "locationWhenInUsePermission": "Spara captures your morning weather and city to add to your daily receipt."
         }
       ]
     ]

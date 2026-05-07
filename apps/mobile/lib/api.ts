@@ -12,6 +12,10 @@ async function request<T>(path: string, options?: RequestInit): Promise<T> {
     return res.json();
 }
 
+export function getReceipts(): Promise<Receipt[]> {
+    return request(`/receipts?userId=${USER_ID}`)
+}
+
 export function getToday(): Promise<Receipt> {
     return request(`/receipts/today?userId=${USER_ID}`);
 }
