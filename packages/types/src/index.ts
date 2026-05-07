@@ -22,6 +22,20 @@ export type PaperAesthetic =
 
 export type SubscriptionTier = 'free' | 'premium';
 
+export interface User {
+    id: string;
+    email: string | null;
+    timezone: string;
+    locale: string;
+    paperAesthetic: string;
+    subscriptionTier: SubscriptionTier;
+    createdAt: string;
+}
+
+export interface UserUpdateInput {
+    timezone?: string;
+}
+
 export interface WeatherSnapshot {
   temp: number;
   condition: 'clear' | 'cloudy' | 'rain' | 'storm' | 'snow';
@@ -31,6 +45,12 @@ export interface WeatherSnapshot {
 export interface LocationSnapshot {
   area: string;
   country: string;
+}
+
+export interface HealthSnapshot {
+  awakeHours: number;
+  sleepHours: number;
+  sleepDebtHours: number;
 }
 
 export interface LineItemPhoto {
@@ -73,6 +93,7 @@ export interface Receipt {
   rerollUsed: boolean;
   weatherSnapshot: WeatherSnapshot | null;
   locationSnapshot: LocationSnapshot | null;
+  healthSnapshot: HealthSnapshot | null;
   paperAesthetic: PaperAesthetic;
   lineItems: LineItem[];
   renderUrl: string | null;
@@ -123,3 +144,5 @@ export interface PaperAestheticConfig {
   tearEdge: boolean;
   currencyLocale: string;
 }
+
+

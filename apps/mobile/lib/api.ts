@@ -1,4 +1,4 @@
-import type { Receipt, NewLineItemInput, HealthEvent, HealthSnapshot, WeatherSnapshot, LocationSnapshot } from '@spara/types';
+import type { Receipt, NewLineItemInput, HealthEvent, HealthSnapshot, WeatherSnapshot, LocationSnapshot, User, UserUpdateInput } from '@spara/types';
 
 const BASE_URL = process.env.EXPO_PUBLIC_API_URL!;
 const USER_ID = process.env.EXPO_PUBLIC_DEV_USER_ID!;
@@ -74,4 +74,19 @@ export function setReceiptSnapshot(
         method: 'POST',
         body: JSON.stringify(snapshot),
     });
+}
+
+export function getMe(): Promise<User> {
+    return request('/users/me');
+}
+
+export function updateMe(input: UserUpdateInput): Promise<User> {
+    return request('/users/me', {
+        method: 'PATCH',
+        body: JSON.stringify(input),
+    });
+}
+
+export function reopenReceipt(id: string): Promise<Receipt> {
+    return request(`/receipts/${id}/reopen`, { method: 'POST' });
 }

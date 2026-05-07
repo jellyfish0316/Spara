@@ -8,6 +8,7 @@ import lineItems from './routes/lineItems';
 import suggestions from './routes/suggestions';
 import weather from './routes/weather'
 import healthSync from './routes/sync/health';
+import users from './routes/users';
 
 
 
@@ -21,6 +22,7 @@ app.route('/receipts', suggestions);
 app.route('/line-items', lineItems);
 app.route('/weather', weather);
 app.route('/sync/health', healthSync);
+app.route('/users', users);
 
 app.get('/', (c) => c.json({ status: 'ok', service: 'spara-api' }));
 

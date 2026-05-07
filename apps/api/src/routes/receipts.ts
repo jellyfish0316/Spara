@@ -12,6 +12,22 @@ function getLocalDate(timezone: string): string {
     return adjusted.toLocaleDateString('en-CA', { timeZone: timezone });
 }
 
+app.get('/', async (c) => {
+    const allFinalized = await db.query.receipts.findMany({
+        where: (r, ops) => ops.and(
+            ops.eq(r.userId, DEV_USER_ID),
+            ops.eq(r.state, 'finalized'),
+        ),
+        orderBy: (r, ops) => ops.desc(r.localDate),
+        with: {
+            lineItems: {
+                orderBy: (li, ops) => ops.asc(li.position),
+            },
+        },
+    });
+    return c.json(allFinalized);
+});
+
 app.get('/today', async (c) => {
     const user = await db.query.users.findFirst({
         where: (u, ops) => ops.eq(u.id, DEV_USER_ID),
@@ -74,7 +90,7 @@ app.get('/:id', async (c) => {
 app.post('/:id/finalize', async (c) => {
     const id = c.req.param('id');
     const body = await c.req.json();
-    const { verdictText } = body;
+    const { verdictText, healthSnapshot } = body;
 
     const receipt = await db.query.receipts.findFirst({
         where: (r, ops) => ops.and(ops.eq(r.id, id), ops.eq(r.userId, DEV_USER_ID)),
@@ -92,6 +108,7 @@ app.post('/:id/finalize', async (c) => {
         verdictMethod: 'llm',
         finalizeMode: 'manual',
         finalizedAt: new Date(),
+        healthSnapshot: healthSnapshot ?? null,
     })
     .where(eq(receipts.id, id));
 
@@ -108,6 +125,35 @@ app.post('/:id/finalize', async (c) => {
 
 
 });
+
+app.post('/:id/snapshot', async (c) => {
+    const id = c.req.param('id');
+    const body = await c.req.json();
+    const { weatherSnapshot, locationSnapshot } = body;
+
+    const receipt = await db.query.receipts.findFirst({
+        where: (r, ops) => ops.and(ops.eq(r.id, id), ops.eq(r.userId, DEV_USER_ID)),
+    });
+    if (!receipt) return c.json({ error: 'Receipt not found' }, 404);
+
+    await db.update(receipts)
+        .set({
+            weatherSnapshot: weatherSnapshot ?? receipt.weatherSnapshot,
+            locationSnapshot: locationSnapshot ?? receipt.locationSnapshot,
+        })
+        .where(eq(receipts.id, id));
+
+    const updated = await db.query.receipts.findFirst({
+        where: (r, ops) => ops.eq(r.id, id),
+        with: {
+            lineItems: {
+                orderBy: (li, ops) => ops.asc(li.position),
+            },
+        },
+    });
+    return c.json(updated);
+});
+
 
 // Dev-only: reset a finalized receipt back to open
 app.post('/:id/reopen', async (c) => {

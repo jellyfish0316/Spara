@@ -37,7 +37,8 @@ export default function TodayScreen() {
     .toLocaleDateString('en-US', { weekday: 'long' })
     .toLowerCase();
 
-  const showFinalize = receipt.lineItems.length >= 3 && receipt.state === 'open';
+  const showFinalize = receipt.state === 'open';
+  const isFinalized = receipt.state === 'finalized';
 
   return (
     <View style={{ flex: 1, backgroundColor: colors.phoneBg, paddingTop: insets.top }}>
@@ -49,6 +50,11 @@ export default function TodayScreen() {
         paddingHorizontal: 24,
         paddingVertical: 12,
       }}>
+        <Pressable onPress={() => router.push('/profile')}>
+          <Text style={{ fontFamily: fonts.regular, fontSize: 11, color: colors.darkTextDim, letterSpacing: 0.55 }}>
+            ← profile
+          </Text>
+        </Pressable>
         <Text style={{ fontFamily: fonts.regular, fontSize: 11, color: colors.darkTextDim, letterSpacing: 0.55 }}>
           {dayName}
         </Text>
@@ -74,26 +80,28 @@ export default function TodayScreen() {
         flexDirection: 'row',
         gap: 10,
       }}>
-        <Pressable
-          onPress={() => router.push('/add')}
-          style={({ pressed }) => ({
-            flex: 1,
-            height: 38,
-            borderWidth: 1,
-            borderColor: colors.darkBorder,
-            borderRadius: 3,
-            alignItems: 'center',
-            justifyContent: 'center',
-            flexDirection: 'row',
-            gap: 6,
-            opacity: pressed ? 0.6 : 1,
-          })}
-        >
-          <Text style={{ fontFamily: fonts.regular, fontSize: 14, color: colors.darkText, marginTop: -1 }}>+</Text>
-          <Text style={{ fontFamily: fonts.regular, fontSize: 10, letterSpacing: 0.8, color: colors.darkText }}>
-            add a line
-          </Text>
-        </Pressable>
+        {!isFinalized && (
+          <Pressable
+            onPress={() => router.push('/add')}
+            style={({ pressed }) => ({
+              flex: 1,
+              height: 38,
+              borderWidth: 1,
+              borderColor: colors.darkBorder,
+              borderRadius: 3,
+              alignItems: 'center',
+              justifyContent: 'center',
+              flexDirection: 'row',
+              gap: 6,
+              opacity: pressed ? 0.6 : 1,
+            })}
+          >
+            <Text style={{ fontFamily: fonts.regular, fontSize: 14, color: colors.darkText, marginTop: -1 }}>+</Text>
+            <Text style={{ fontFamily: fonts.regular, fontSize: 10, letterSpacing: 0.8, color: colors.darkText }}>
+              add a line
+            </Text>
+          </Pressable>
+        )}
 
         {showFinalize && (
           <Pressable
@@ -110,6 +118,25 @@ export default function TodayScreen() {
           >
             <Text style={{ fontFamily: fonts.medium, fontSize: 10, letterSpacing: 1, color: colors.ink }}>
               finalize
+            </Text>
+          </Pressable>
+        )}
+
+        {isFinalized && (
+          <Pressable
+            onPress={() => router.push('/share')}
+            style={({ pressed }) => ({
+              flex: 1,
+              height: 38,
+              backgroundColor: colors.cream,
+              borderRadius: 3,
+              alignItems: 'center',
+              justifyContent: 'center',
+              opacity: pressed ? 0.7 : 1,
+            })}
+          >
+            <Text style={{ fontFamily: fonts.medium, fontSize: 10, letterSpacing: 1, color: colors.ink }}>
+              share to stories
             </Text>
           </Pressable>
         )}

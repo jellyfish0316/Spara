@@ -9,9 +9,11 @@ const openai  = new OpenAI({apiKey: process.env.OPENAI_API_KEY, });
 
 app.post('/:id/verdict-suggestions', async(c) => {
     const id = c.req.param('id');
-    
+    const body = await c.req.json().catch(() => ({}));
+    const metrics = body.metrics as { awakeHours: number; sleepHours: number; sleepDebtHours: number } | undefined;
+
     const receipt = await db.query.receipts.findFirst({
-        where: (r, ops) => ops.eq(id, r.id),
+        where: (r, ops) => ops.eq(r.id, id),
         with: { lineItems: true },
     });
 
@@ -20,14 +22,18 @@ app.post('/:id/verdict-suggestions', async(c) => {
     const itemList = receipt.lineItems
         .map(li => `${li.quantity}x ${li.itemText} · ${li.priceText}`)
         .join('\n');
-    
+
+    const healthLine = metrics
+        ? `\n\nHealth: ${Math.round(metrics.awakeHours)}h awake, ${metrics.sleepHours.toFixed(1)}h slept, ${metrics.sleepDebtHours.toFixed(1)}h sleep debt.`
+        : '';
+
     try {
         const response = await openai.chat.completions.create({
         model: 'gpt-4o-mini',
         messages: [
             {
             role: 'user',
-            content: `Given this day's receipt, suggest 4 short verdicts (1-3 words, all caps) the user might want to write. Mix tones — one positive, one rueful, one neutral, one surprising. Make them feel earned by the actual content. Don't be generic. Don't be therapy-speak. Return only a JSON array of 4 strings, nothing else.\n\nLine items:\n${itemList}`,
+            content: `Given this day's receipt, suggest 4 short verdicts (1-3 words, all caps) the user might want to write. Mix tones — one positive, one rueful, one neutral, one surprising. Make them feel earned by the actual content. Don't be generic. Don't be therapy-speak. Return only a JSON array of 4 strings, nothing else.\n\nLine items:\n${itemList}${healthLine}`,
             },
         ],
         max_tokens: 100,

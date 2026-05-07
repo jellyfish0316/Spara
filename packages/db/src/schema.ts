@@ -58,6 +58,7 @@ export const receipts = pgTable('receipts', {
   rerollUsed:       boolean('reroll_used').notNull().default(false),
   weatherSnapshot:  jsonb('weather_snapshot'),
   locationSnapshot: jsonb('location_snapshot'),
+  healthSnapshot:   jsonb('health_snapshot'),
   paperAesthetic:   text('paper_aesthetic').notNull().default('classic_thermal'),
   createdAt:        timestamp('created_at').notNull().defaultNow(),
 }, (table) => ({

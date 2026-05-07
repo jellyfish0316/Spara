@@ -15,9 +15,10 @@
     },
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.spara.app",
+      "bundleIdentifier": "com.jellyfish.spara.app",
       "infoPlist": {
-        "NSLocationWhenInUseUsageDescription": "Spara captures your morning weather and city to add to your daily receipt."
+        "NSLocationWhenInUseUsageDescription": "Spara captures your morning weather and city to add to your daily receipt.",
+        "LSApplicationQueriesSchemes": ["instagram-stories", "instagram"]
       }
     },
     "android": {
