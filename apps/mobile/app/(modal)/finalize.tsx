@@ -4,6 +4,8 @@ import { useRouter } from 'expo-router';
 import { useTodayStore } from '../../store/today';
 import * as api from '../../lib/api';
 import { colors, fonts } from '../../lib/theme';
+import { ensureHealthAuth, getDailyMetrics } from '../../lib/healthkit';
+import type { HealthSnapshot } from '@spara/types';
 
 type Phase = 'dotting' | 'revealing' | 'locked';
 
@@ -20,6 +22,7 @@ export default function FinalizeScreen() {
     const [verdictText, setVerdictText] = useState('');
     const [dotIndex, setDotIndex] = useState(0);
     const [rerolled, setRerolled] = useState(false);
+    const [metrics, setMetrics] = useState<HealthSnapshot | null>(null);
 
     const currentVerdict = suggestions[suggestionIndex] ?? '';
 
@@ -27,12 +30,25 @@ export default function FinalizeScreen() {
     const suggestionsRef = useRef<string[]>([]);
     useEffect(() => { suggestionsRef.current = suggestions; }, [suggestions]);
 
-    // Fetch suggestions on mount — fills the data, does NOT change phase
+    // Read HealthKit, then fetch suggestions with metrics — fills data, does NOT change phase
     useEffect(() => {
         if (!receipt) return;
-        api.getVerdictSuggestions(receipt.id)
-        .then((res) => setSuggestions(res.suggestions.length > 0 ? res.suggestions : ['A GOOD ONE']))
-        .catch(() => setSuggestions(['A GOOD ONE']));
+        (async () => {
+            let snapshot: HealthSnapshot | null = null;
+            try {
+                const ok = await ensureHealthAuth();
+                if (ok) snapshot = await getDailyMetrics(receipt.localDate);
+            } catch (err) {
+                console.warn('HealthKit read failed:', err);
+            }
+            setMetrics(snapshot);
+            try {
+                const res = await api.getVerdictSuggestions(receipt.id, snapshot);
+                setSuggestions(res.suggestions.length > 0 ? res.suggestions : ['A GOOD ONE']);
+            } catch {
+                setSuggestions(['A GOOD ONE']);
+            }
+        })();
     }, []);
 
     // Dotting animation — cycles dots, exits when min cycles done AND suggestions are ready
@@ -81,7 +97,7 @@ export default function FinalizeScreen() {
     };
 
     const handleDone = async () => {
-        await finalize(currentVerdict);
+        await finalize(currentVerdict, metrics);
         router.back();
     };
 

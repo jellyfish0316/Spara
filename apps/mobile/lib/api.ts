@@ -1,4 +1,4 @@
-import type { Receipt, NewLineItemInput, HealthEvent } from '@spara/types';
+import type { Receipt, NewLineItemInput, HealthEvent, HealthSnapshot } from '@spara/types';
 
 const BASE_URL = process.env.EXPO_PUBLIC_API_URL!;
 const USER_ID = process.env.EXPO_PUBLIC_DEV_USER_ID!;
@@ -31,15 +31,18 @@ export function deleteLineItem(id: string): Promise<Receipt> {
     return request(`/line-items/${id}`, { method: 'DELETE' });
 }
 
-export function finalizeReceipt(id: string, verdictText: string): Promise<Receipt> {
+export function finalizeReceipt(id: string, verdictText: string, healthSnapshot?: HealthSnapshot | null): Promise<Receipt> {
     return request(`/receipts/${id}/finalize`, {
         method: 'POST',
-        body: JSON.stringify({ verdictText }),
+        body: JSON.stringify({ verdictText, healthSnapshot }),
     });
 }
 
-export function getVerdictSuggestions(id: string): Promise<{ suggestions: string[] }> {
-    return request(`/receipts/${id}/verdict-suggestions`, { method: 'POST' });
+export function getVerdictSuggestions(id: string, metrics?: HealthSnapshot | null): Promise<{ suggestions: string[] }> {
+    return request(`/receipts/${id}/verdict-suggestions`, {
+        method: 'POST',
+        body: JSON.stringify({ metrics }),
+    });
 }
 
 export function syncHealth(events: HealthEvent[], localDate: string): Promise<void> {

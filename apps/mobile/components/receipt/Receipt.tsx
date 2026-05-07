@@ -1,5 +1,5 @@
 import { View, Text, Pressable } from 'react-native';
-import type { Receipt as ReceiptType, LineItem } from '@spara/types';
+import type { Receipt as ReceiptType, LineItem, HealthSnapshot } from '@spara/types';
 import { colors, fonts } from '../../lib/theme';
 
 interface Props {
@@ -25,10 +25,14 @@ export function Receipt({ receipt, onDeleteItem }: Props) {
           <View style={{ paddingVertical: 6 }}>
             <DashedLine />
           </View>
-          <SummaryRows verdictText={receipt.verdictText} />
-          <ThankYou />
-          <Barcode />
-          <ReceiptCode localDate={receipt.localDate} />
+          {receipt.state !== 'open' && (
+            <>
+              <SummaryRows verdictText={receipt.verdictText} health={receipt.healthSnapshot} />
+              <ThankYou />
+              <Barcode />
+              <ReceiptCode localDate={receipt.localDate} />
+            </>
+          )}
         </View>
       </View>
       <Perforation />
@@ -129,12 +133,15 @@ function LineItemRow({ item, onDelete }: { item: LineItem; onDelete?: (id: strin
   );
 }
 
-function SummaryRows({ verdictText }: { verdictText: string | null }) {
+function SummaryRows({ verdictText, health }: { verdictText: string | null; health: HealthSnapshot | null }) {
+  const awake = health ? `${Math.round(health.awakeHours)}h awake` : '—';
+  const sleep = health ? `${health.sleepHours.toFixed(1)}h slept` : '—';
+  const debt = health ? `${health.sleepDebtHours.toFixed(1)}h sleep debt` : '—';
   return (
     <View style={{ marginBottom: 14 }}>
-      <SummaryRow label="SUBTOTAL" value="14h awake" />
-      <SummaryRow label="TIPS" value="7h on screens" />
-      <SummaryRow label="TAX" value="3h sleep debt" />
+      <SummaryRow label="SUBTOTAL" value={awake} />
+      <SummaryRow label="TIPS" value={sleep} />
+      <SummaryRow label="TAX" value={debt} />
       <View style={{ marginTop: 6 }}>
         <DashedLine />
       </View>
@@ -146,13 +153,13 @@ function SummaryRows({ verdictText }: { verdictText: string | null }) {
         borderBottomWidth: 1,
         borderColor: colors.inkFaint,
       }}>
-        <Text style={{ fontFamily: fonts.semibold, fontSize: 11, letterSpacing: 1.65, color: colors.ink }}>TOTAL</Text>
+        <Text style={{ fontFamily: fonts.semibold, fontSize: 15, letterSpacing: 1.65, color: colors.ink }}>TOTAL</Text>
         {verdictText ? (
-          <Text style={{ fontFamily: fonts.semibold, fontSize: 11, letterSpacing: 1.65, color: colors.ink }} numberOfLines={1}>
+          <Text style={{ fontFamily: fonts.semibold, fontSize: 15, letterSpacing: 1.65, color: colors.ink }} numberOfLines={1}>
             {verdictText}
           </Text>
         ) : (
-          <Text style={{ fontFamily: fonts.regular, fontSize: 11, letterSpacing: 3.3, color: colors.inkFaint }}>· · · · · · ·</Text>
+          <Text style={{ fontFamily: fonts.regular, fontSize: 15, letterSpacing: 3.3, color: colors.inkFaint }}>· · · · · · ·</Text>
         )}
       </View>
     </View>
@@ -172,8 +179,8 @@ function ThankYou() {
   const style = { fontFamily: fonts.regular, fontSize: 11, color: colors.inkLight, textAlign: 'center' as const, lineHeight: 16 };
   return (
     <View style={{ alignItems: 'center', paddingVertical: 8 }}>
-      <Text style={style}>thank you for living</Text>
-      <Text style={style}>come again tomorrow</Text>
+      <Text style={style}>thank  you  for  living</Text>
+      <Text style={style}>come  again  tomorrow</Text>
     </View>
   );
 }
@@ -202,7 +209,7 @@ function ReceiptCode({ localDate }: { localDate: string }) {
       color: colors.inkLight,
       paddingBottom: 18,
     }}>
-      RCPT  ·  {code}  ·  TND
+      RCPT  ·  {code}  ·  SPARA
     </Text>
   );
 }

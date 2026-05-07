@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import type { Receipt, NewLineItemInput } from '@spara/types';
+import type { Receipt, NewLineItemInput, HealthSnapshot } from '@spara/types';
 import * as api from '../lib/api';
 
 interface TodayState {
@@ -9,7 +9,7 @@ interface TodayState {
     loadToday: () => Promise<void>;
     addItem: (input: NewLineItemInput) => Promise<void>;
     removeItem: (id: string) => Promise<void>;
-    finalize: (verdictText: string) => Promise<void>;
+    finalize: (verdictText: string, healthSnapshot?: HealthSnapshot | null) => Promise<void>;
 }
 
 export const useTodayStore = create<TodayState>((set, get) => ({
@@ -49,10 +49,10 @@ export const useTodayStore = create<TodayState>((set, get) => ({
         }
     },
 
-    finalize: async (verdictText) => {
+    finalize: async (verdictText, healthSnapshot) => {
         const receipt = get().receipt;
         if (!receipt) return;
-        const updated = await api.finalizeReceipt(receipt.id, verdictText);
+        const updated = await api.finalizeReceipt(receipt.id, verdictText, healthSnapshot);
         set({ receipt: updated });
     },
 }));
