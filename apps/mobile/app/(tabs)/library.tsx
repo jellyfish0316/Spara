@@ -551,13 +551,10 @@ export default function LibraryScreen() {
                                 </Text>
                             </View>
                         ) : (
-                            <View style={{ gap: 10 }}>
-                                {chunk(filteredMonthReceipts, 2).map((row, i) => (
-                                    <View key={i} style={{ flexDirection: 'row', gap: 10 }}>
-                                        {row.map((r) => (
-                                            <EditorialCard key={r.id} receipt={r} onPress={() => setSelectedReceipt(r)} />
-                                        ))}
-                                        {row.length === 1 && <View style={{ flex: 1 }} />}
+                            <View style={{ flexDirection: 'row', flexWrap: 'wrap', marginHorizontal: -5 }}>
+                                {filteredMonthReceipts.map((r) => (
+                                    <View key={r.id} style={{ width: '50%', paddingHorizontal: 5, paddingBottom: 10 }}>
+                                        <EditorialCard receipt={r} onPress={() => setSelectedReceipt(r)} />
                                     </View>
                                 ))}
                             </View>
@@ -571,9 +568,4 @@ export default function LibraryScreen() {
     );
 }
 
-function chunk<T>(arr: T[], size: number): T[][] {
-    const out: T[][] = [];
-    for (let i = 0; i < arr.length; i += size) out.push(arr.slice(i, i + size));
-    return out;
-}
 
