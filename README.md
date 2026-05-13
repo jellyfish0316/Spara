@@ -2,8 +2,6 @@
 
 A daily life-logging iOS app that generates a thermal-printer-style receipt for your day. Log what you did, finalize at the end of the day to receive an AI-generated verdict, and share to Instagram Stories.
 
----
-
 ## Features
 
 - **Daily receipt** — a running list of your day's line items, styled as a thermal receipt
@@ -14,8 +12,6 @@ A daily life-logging iOS app that generates a thermal-printer-style receipt for 
 - **Instagram Stories share** — capture the receipt as a sticker and share directly to Stories via the native iOS pasteboard bridge
 - **4am auto-finalize** — any open receipt past its 4am rollover is automatically finalized with verdict *FORGOTTEN*
 - **Profile** — stats (streak, receipt count, good ones), timezone picker, dev tools
-
----
 
 ## Architecture
 
@@ -50,8 +46,6 @@ flowchart TB
 
 The mobile app talks to the API over HTTPS. The API persists state in PostgreSQL via Drizzle and calls out to OpenAI for verdict suggestions and OpenWeather for the morning weather snapshot. Sharing to Instagram Stories bypasses the server entirely — the receipt is captured on-device via `react-native-view-shot`, written to `UIPasteboard` as a sticker, and opened in IG via the `instagram-stories://share` URL scheme. A cron job inside the API server scans hourly for receipts past their 4am rollover and auto-finalizes them.
 
----
-
 ## Monorepo structure
 
 ```
@@ -66,8 +60,6 @@ spara/
     └── verdicts/        # Curated verdict string list
 ```
 
----
-
 ## Tech stack
 
 | Layer | Technology |
@@ -81,8 +73,6 @@ spara/
 | Location | `expo-location` |
 | Sharing | `react-native-share`, `react-native-view-shot` |
 | Monorepo | Turborepo, pnpm workspaces |
-
----
 
 ## Getting started
 
@@ -153,8 +143,6 @@ To run on a physical device:
 npx expo run:ios --device
 ```
 
----
-
 ## API routes
 
 | Method | Path | Description |
@@ -174,8 +162,6 @@ npx expo run:ios --device
 | `GET` | `/weather` | Weather for lat/lng |
 | `POST` | `/sync/health` | Sync HealthKit events |
 
----
-
 ## Roadmap
 
 - **Lock Screen / Control Center widget** — single-tap iOS 18 widget that deep-links into the add-a-line modal
@@ -184,7 +170,6 @@ npx expo run:ios --device
 - **`verdictTone` field** — store `good | meh | barely` at finalize time so library stats and month sparklines are accurate
 - **Visit Monitoring** — detect when the user spends time at a location (cafe, gym, work) via iOS `CLLocationManager` visits API, look up nearby POI via Foursquare, and prompt to add to the receipt
 
----
 
 ## Scheduled jobs
 
